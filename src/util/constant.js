@@ -1,13 +1,11 @@
 export default {
   MENU: {},
   ROUTER_NAME: {
-    LOGIN: "Login",
     HOME: "Home",
-    REGISTER: "Register"
+    DASHBOARD_ADMIN: "DashBoardAdmin"
   },
   ROUTER_PATH: {
-    LOGIN: "/login",
     HOME: "/home",
-    REGISTER: "/register"
+    DASHBOARD_ADMIN: "/dashBoardAdmin"
   }
 };
