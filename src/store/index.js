@@ -5,7 +5,8 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    uid: ''
+    uid: '',
+    setRole: ''
   },
   actions: {
     setUid: ({commit, state}, uid) => {

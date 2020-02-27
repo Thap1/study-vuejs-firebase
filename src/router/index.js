@@ -12,18 +12,13 @@ const router = new VueRouter({
   routes: paths
 });
 router.beforeEach((to, from, next) => {
-  console.log("to::::", to);
-
-
   firebase.auth().onAuthStateChanged(userAuth => {
-    console.log("userAuth", userAuth);
     if (userAuth) {
       firebase
         .auth()
         .currentUser.getIdTokenResult()
         .then(res => {
-          console.log("Res.admin:::", res.claims.admin);
-          console.log("Res.user:::", res.claims.user);
+          console.log("Claim:::", res.claims)
           if (res.claims.admin) {
             if (to.path !== Constant.ROUTER_PATH.DASHBOARD_ADMIN) {
               return next({ path: Constant.ROUTER_PATH.DASHBOARD_ADMIN });

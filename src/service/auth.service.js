@@ -31,8 +31,10 @@ export default {
         alert("Oops!!" + err.message);
       });
   },
-  getTokenUid() {},
-  checkLogin() {
+  isCheckOnState() {
+      return firebase.auth()
+  },
+  isCheckLogin() {
     return firebase.auth().currentUser;
   },
   logout() {

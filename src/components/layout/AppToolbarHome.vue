@@ -6,27 +6,27 @@
       >
       <v-spacer></v-spacer>
       <v-text-field
-        just-center
-        solo-inverted
         flat
         hide-details
+        just-center
         label="Search"
         prepend-inner-icon="search"
+        solo-inverted
       ></v-text-field>
       <v-spacer></v-spacer>
       <v-btn
-        v-if="!isLogin"
-        rounded
-        color="primary"
         @click="dialogRegister = true"
-        >Sign Up</v-btn
-      >
+        color="primary"
+        rounded
+        v-if="!isLogin"
+        >Sign Up
+      </v-btn>
       <v-btn v-if="!isLogin" rounded color="primary" @click="dialog = true"
-        >Login</v-btn
-      >
+        >Login
+      </v-btn>
       <v-btn v-if="isLogin" rounded color="grey" @click="logout()"
-        >Logout</v-btn
-      >
+        >Logout
+      </v-btn>
     </v-app-bar>
     <v-dialog v-model="dialog" max-width="350">
       <v-card>
@@ -54,29 +54,35 @@
         <v-card-text>
           <v-flex>
             <v-text-field v-model="formData.email" label="Email"></v-text-field>
+            <v-select
+              v-model="select"
+              :items="role"
+              label="Select Role"
+            ></v-select>
+
             <v-text-field
-              v-model="formData.password"
               label="Password"
+              v-model="formData.password"
             ></v-text-field>
             <v-text-field
-              v-model="formData.confirmPassword"
               label="Confirm Password"
+              v-model="formData.confirmPassword"
             ></v-text-field>
             <v-text-field
-              v-model="formData.firstName"
               label="First Name"
+              v-model="formData.firstName"
             ></v-text-field>
             <v-text-field
-              v-model="formData.lastName"
               label="Last Name"
+              v-model="formData.lastName"
             ></v-text-field>
             <v-text-field
-              v-model="formData.gender"
               label="Gender"
+              v-model="formData.gender"
             ></v-text-field>
             <v-text-field
-              v-model="formData.phoneNumber"
               label="Phone Number"
+              v-model="formData.phoneNumber"
             ></v-text-field>
           </v-flex>
         </v-card-text>
@@ -102,6 +108,7 @@ export default {
   data() {
     return {
       email: "",
+      select: null,
       password: "",
       isLogin: false,
       dialog: false,
@@ -114,11 +121,15 @@ export default {
         lastName: "",
         gender: "",
         phoneNumber: ""
-      }
+      },
+      role: ["User", "Admin", "Shop"]
     };
   },
-  mounted() {
+  created() {
     this.checkLogin();
+  },
+  updated() {
+    console.log("select", this.select);
   },
   methods: {
     login() {
@@ -126,21 +137,29 @@ export default {
       AuthService.login(this.email, this.password)
         .then(res => {
           this.$store.dispatch("setUid", res.user.uid);
+          this.checkLogin();
         })
         .catch(err => {
           alert("Oops!" + err.message);
         });
     },
-    checkLogin() {}
-  },
-  logout() {
-    this.isLogin = false;
-    AuthService.logout();
-    // console.log("AuthService.getTokenUid()::::", AuthService.getTokenUid());
-  },
-  register() {
-    AuthService.registerAcc(this.formData);
-    this.dialogRegister = !this.dialogRegister;
+    checkLogin() {
+      if (AuthService.isCheckLogin()) {
+        this.isLogin = true;
+      } else this.isLogin = false;
+    },
+    async logout() {
+      AuthService.logout().then(() => {
+        this.checkLogin();
+      });
+    },
+    register() {
+      AuthService.registerAcc(this.formData);
+      this.dialogRegister = !this.dialogRegister;
+    },
+      setRole() {
+          this.$store.dispatch()
+      }
   }
 };
 </script>
