@@ -5,7 +5,7 @@ const db = admin.firestore();
 exports.AddUserRole = functions.auth.user().onCreate(async authUser => {
   if (authUser.email) {
     const customClaims = {
-      user: admin
+      user: true
     };
     try {
       var _ = await admin

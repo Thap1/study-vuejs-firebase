@@ -122,7 +122,6 @@ export default {
   },
   methods: {
     login() {
-      this.dialog = !this.dialog;
       AuthService.login(this.email, this.password)
         .then(res => {
           this.$store.dispatch("setUid", res.user.uid);
@@ -131,16 +130,14 @@ export default {
           alert("Oops!" + err.message);
         });
     },
-    checkLogin() {}
-  },
-  logout() {
-    this.isLogin = false;
-    AuthService.logout();
-    // console.log("AuthService.getTokenUid()::::", AuthService.getTokenUid());
-  },
-  register() {
-    AuthService.registerAcc(this.formData);
-    this.dialogRegister = !this.dialogRegister;
+    checkLogin() {},
+    logout() {
+      AuthService.logout();
+    },
+    register() {
+      AuthService.registerAcc(this.formData);
+      this.dialogRegister = !this.dialogRegister;
+    }
   }
 };
 </script>
