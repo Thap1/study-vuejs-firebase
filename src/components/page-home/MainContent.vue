@@ -1,16 +1,18 @@
 <template>
-  <v-content>
-    <v-container fluid fill-height>
-      <v-layout justify-center align-center>
-        <p>ssssssssssssssssssssssssssssssssssssssssssss</p>
+    <v-container grid-list-md>
+      <v-layout wrap column>
+        <v-flex xs12>
+          <ArticlePost></ArticlePost>
+        </v-flex>
       </v-layout>
     </v-container>
-  </v-content>
 </template>
 
 <script>
+import ArticlePost from "./main-content/ArticlePost";
 export default {
-  name: "MainContent"
+  name: "MainContent",
+  components: { ArticlePost }
 };
 </script>
 

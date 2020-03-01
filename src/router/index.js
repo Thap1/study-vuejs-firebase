@@ -18,7 +18,6 @@ router.beforeEach((to, from, next) => {
         .auth()
         .currentUser.getIdTokenResult()
         .then(res => {
-          console.log("Claim:::", res.claims)
           if (res.claims.admin) {
             if (to.path !== Constant.ROUTER_PATH.DASHBOARD_ADMIN) {
               return next({ path: Constant.ROUTER_PATH.DASHBOARD_ADMIN });
