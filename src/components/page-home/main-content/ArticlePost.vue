@@ -11,7 +11,13 @@
           <v-flex xs12>
             <v-textarea solo label="What's on your mind, Uzir?" height="100px">
             </v-textarea>
-            <v-file-input v-model="file">Image</v-file-input>
+            <v-file-input
+              accept="image/png, image/jpeg, image/bmp"
+              show-size
+              counter
+              multiple
+              v-model="image"
+            />
           </v-flex>
         </v-layout>
       </v-card-text>
@@ -29,21 +35,27 @@ export default {
   name: "ArticlePost",
   data() {
     return {
-      file: []
+      image: []
     };
   },
   methods: {
-    uploadFile() {
-      // let message = "5b6p5Y+344GX44G+44GX44Gf77yB44GK44KB44Gn44Go44GG77yB";
-      //   firebase.storage.putString(message, "base64").then(function(snapshot) {
-      //   console.log("Uploaded a base64 string!",snapshot);
-      //
-      // });
-      let firebaseStore = firebase.storage().ref();
-      let uploadImage = firebaseStore.child("image");
-      uploadImage.put(this.file).then(ref => {
-        console.log("ref::", ref);
-        console.log("file:::", this.file);
+    async uploadFile() {
+      let imageFile = this.image;
+      if (imageFile) {
+        for (let i = 0; i < imageFile.length; i++) {
+          let base64Image = await this.convertToBase64(imageFile[i]);
+          let firebaseStore = firebase.storage().ref();
+          let uploadImage = firebaseStore.child("image/mountain.jpg" + i);
+          uploadImage.putString(base64Image, "data_url")
+        }
+      }
+    },
+    convertToBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
       });
     }
   }
