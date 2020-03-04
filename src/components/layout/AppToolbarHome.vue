@@ -102,6 +102,7 @@
 <script>
 // import Constant from "../../util/constant";
 import AuthService from "../../service/auth.service";
+import { bus } from "../../main";
 
 export default {
   name: "AppToolbarHome",
@@ -127,10 +128,11 @@ export default {
   },
   created() {
     this.checkLogin();
+    bus.$on("openDialogLogin", value => {
+      this.dialog = value;
+    });
   },
-  updated() {
-    console.log("select", this.select);
-  },
+
   methods: {
     login() {
       this.dialog = !this.dialog;
@@ -157,9 +159,9 @@ export default {
       AuthService.registerAcc(this.formData);
       this.dialogRegister = !this.dialogRegister;
     },
-      setRole() {
-          this.$store.dispatch()
-      }
+    setRole() {
+      this.$store.dispatch();
+    }
   }
 };
 </script>

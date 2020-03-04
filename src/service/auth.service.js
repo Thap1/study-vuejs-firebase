@@ -31,13 +31,36 @@ export default {
         alert("Oops!!" + err.message);
       });
   },
-  isCheckOnState() {
-      return firebase.auth()
+  getUid() {
+    return firebase.auth().currentUser.uid;
+  },
+  getUser(param) {
+    return firebase.database().ref("/users/" + param);
   },
   isCheckLogin() {
-    return firebase.auth().currentUser;
+    return firebase.auth().currentUser.uid;
   },
   logout() {
     return firebase.auth().signOut();
-  }
+  },
+  postImage(path, file) {
+    return firebase
+      .storage()
+      .ref()
+      .child(path)
+      .put(file);
+  },
+  postArticle(uid, description) {
+    return firebase
+      .database()
+      .ref("/post/" + uid)
+      .set({
+        description: description,
+        createdAt: firebase.database.ServerValue.TIMESTAMP
+      });
+  },
+  getPostImage() {
+      // return firebase.storage()
+  },
+  getPostArticle() {}
 };

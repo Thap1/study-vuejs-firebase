@@ -9,53 +9,97 @@
       <v-card-text>
         <v-layout>
           <v-flex xs12>
-            <v-textarea solo label="What's on your mind, Uzir?" height="100px">
+            <v-textarea
+              v-model="description"
+              solo
+              label="What's on your mind, Uzir?"
+              height="100px"
+            >
             </v-textarea>
-            <v-file-input
-              accept="image/png, image/jpeg, image/bmp"
-              show-size
-              counter
+            <v-btn
+              color="primary"
+              class="text-none"
+              depressed
+              :loading="isSelecting"
+              @click="onButtonClick()"
+            >
+              <v-icon left>
+                cloud_upload
+              </v-icon>
+              {{ buttonImage }}
+            </v-btn>
+            <input
+              ref="uploader"
+              class="d-none"
+              type="file"
               multiple
-              v-model="image"
+              accept="image/*"
+              @change="onFileChanged"
             />
           </v-flex>
         </v-layout>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary" @click="uploadFile()">Đăng bài</v-btn>
+        <v-btn color="primary" @click="posts()">Đăng bài</v-btn>
       </v-card-actions>
     </v-card>
   </div>
 </template>
 
 <script>
-import firebase from "firebase";
+import { bus } from "../../../main";
+import AuthService from "../../../service/auth.service";
 export default {
   name: "ArticlePost",
   data() {
     return {
-      image: []
+      image: [],
+      defaultButtonImage: "Image Upload",
+      isSelecting: false,
+      description: ""
     };
+  },
+  computed: {
+    buttonImage() {
+      return this.image.name ? this.image.name : this.defaultButtonImage;
+    }
   },
   methods: {
     async uploadFile() {
       let imageFile = this.image;
-      if (imageFile) {
-        for (let i = 0; i < imageFile.length; i++) {
-          let base64Image = await this.convertToBase64(imageFile[i]);
-          let firebaseStore = firebase.storage().ref();
-          let uploadImage = firebaseStore.child("image/mountain.jpg" + i);
-          uploadImage.putString(base64Image, "data_url")
-        }
+      let uid = AuthService.getUid();
+      if (!AuthService.isCheckLogin()) {
+        bus.$emit("openDialogLogin", true);
+      }
+      if (imageFile.name) {
+        let pathFile = "image/" + uid + "/" + imageFile.name;
+        AuthService.postImage(pathFile, imageFile).then(() => {
+          alert("upload file success");
+        });
       }
     },
-    convertToBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = error => reject(error);
+    onButtonClick() {
+      this.isSelecting = true;
+      window.addEventListener(
+        "focus",
+        () => {
+          this.isSelecting = false;
+        },
+        {
+          once: true
+        }
+      );
+      this.$refs.uploader.click();
+    },
+    onFileChanged(e) {
+      this.image = e.target.files[0];
+    },
+    posts() {
+      this.uploadFile();
+      let uid = AuthService.getUid();
+      AuthService.postArticle(uid, this.description).then(() => {
+        alert("Post Success");
       });
     }
   }
