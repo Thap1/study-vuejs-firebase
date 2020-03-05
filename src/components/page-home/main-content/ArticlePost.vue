@@ -57,7 +57,10 @@ export default {
       image: [],
       defaultButtonImage: "Image Upload",
       isSelecting: false,
-      description: ""
+      description: "",
+      uid: "",
+      fullPathImage: "",
+      postImage: ""
     };
   },
   computed: {
@@ -66,19 +69,6 @@ export default {
     }
   },
   methods: {
-    async uploadFile() {
-      let imageFile = this.image;
-      let uid = AuthService.getUid();
-      if (!AuthService.isCheckLogin()) {
-        bus.$emit("openDialogLogin", true);
-      }
-      if (imageFile.name) {
-        let pathFile = "image/" + uid + "/" + imageFile.name;
-        AuthService.postImage(pathFile, imageFile).then(() => {
-          alert("upload file success");
-        });
-      }
-    },
     onButtonClick() {
       this.isSelecting = true;
       window.addEventListener(
@@ -95,12 +85,36 @@ export default {
     onFileChanged(e) {
       this.image = e.target.files[0];
     },
+    uploadFile() {
+      let imageFile = this.image;
+      if (imageFile.name) {
+        this.fullPathImage = "/image/" + this.uid + "/" + imageFile.name;
+        AuthService.postImage(this.fullPathImage, imageFile).then(() => {
+          alert("upload file success");
+        });
+      }
+    },
+    getDownload() {
+        console.log("this.fullPathImage:", this.fullPathImage)
+      return AuthService.getImagePost(this.fullPathImage).getDownloadURL();
+    },
+
     posts() {
-      this.uploadFile();
-      let uid = AuthService.getUid();
-      AuthService.postArticle(uid, this.description).then(() => {
-        alert("Post Success");
-      });
+      if (!AuthService.isCheckLogin()) {
+        bus.$emit("openDialogLogin", true);
+      } else {
+        this.uid = AuthService.getUid();
+        let pathPost = "/post/" + this.uid + "/" + new Date();
+        this.uploadFile();
+        this.getDownload().then(urlImage => {
+          console.log("urlImage", urlImage);
+          AuthService.postArticle(
+            pathPost,
+            this.description,
+            urlImage
+          ).then(() => {});
+        });
+      }
     }
   }
 };

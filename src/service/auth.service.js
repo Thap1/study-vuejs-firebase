@@ -38,7 +38,7 @@ export default {
     return firebase.database().ref("/users/" + param);
   },
   isCheckLogin() {
-    return firebase.auth().currentUser.uid;
+    return firebase.auth().currentUser;
   },
   logout() {
     return firebase.auth().signOut();
@@ -50,17 +50,18 @@ export default {
       .child(path)
       .put(file);
   },
-  postArticle(uid, description) {
+  postArticle(path, description, urlImage) {
     return firebase
       .database()
-      .ref("/post/" + uid)
+      .ref("/post/" + path)
       .set({
         description: description,
+        urlImage: urlImage,
         createdAt: firebase.database.ServerValue.TIMESTAMP
       });
   },
-  getPostImage() {
-      // return firebase.storage()
+  getImagePost(pathImage) {
+    return firebase.storage().ref(pathImage);
   },
   getPostArticle() {}
 };
