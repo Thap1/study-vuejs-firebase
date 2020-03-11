@@ -16,6 +16,12 @@
               height="100px"
             >
             </v-textarea>
+            <v-img
+              v-if="imageName"
+              :src="imageUrl"
+              max-height="70px"
+              max-width="70px"
+            ></v-img>
             <v-btn
               color="primary"
               class="text-none"
@@ -60,15 +66,39 @@ export default {
       description: "",
       uid: "",
       fullPathImage: "",
-      postImage: ""
+      postImage: "",
+      imageName: "",
+      imageUrl: ""
     };
   },
   computed: {
     buttonImage() {
-      return this.image.name ? this.image.name : this.defaultButtonImage;
+      return this.imageName ? this.imageName : this.defaultButtonImage;
     }
   },
+  created() {},
+  watch: {
+    image: "isCheckImage"
+  },
+
   methods: {
+    isCheckImage() {
+      if (this.image.name) {
+        this.fullPathImage = "/image/" + this.image.name;
+        let index = this.image.name.lastIndexOf(".");
+        this.imageName = this.image.name.slice(0, index);
+        const fr = new FileReader();
+        fr.readAsDataURL(this.image);
+        fr.addEventListener("load", () => {
+          this.imageUrl = fr.result;
+        });
+      }
+    },
+    onFileChanged(e) {
+      if (e.target.files.length > 0) {
+        this.image = e.target.files[0];
+      }
+    },
     onButtonClick() {
       this.isSelecting = true;
       window.addEventListener(
@@ -82,38 +112,55 @@ export default {
       );
       this.$refs.uploader.click();
     },
-    onFileChanged(e) {
-      this.image = e.target.files[0];
-    },
     uploadFile() {
       let imageFile = this.image;
-      if (imageFile.name) {
-        this.fullPathImage = "/image/" + this.uid + "/" + imageFile.name;
-        AuthService.postImage(this.fullPathImage, imageFile).then(() => {
-          alert("upload file success");
-        });
+      if (this.imageName) {
+        return AuthService.postImage(this.fullPathImage, imageFile);
       }
     },
-    getDownload() {
-        console.log("this.fullPathImage:", this.fullPathImage)
+    getDownloadImage() {
       return AuthService.getImagePost(this.fullPathImage).getDownloadURL();
     },
 
-    posts() {
+    async getUser() {
+      let pathUser = "/users/" + (await AuthService.getUid());
+      return AuthService.getUser(pathUser);
+    },
+
+    async posts() {
       if (!AuthService.isCheckLogin()) {
         bus.$emit("openDialogLogin", true);
       } else {
-        this.uid = AuthService.getUid();
-        let pathPost = "/post/" + this.uid + "/" + new Date();
-        this.uploadFile();
-        this.getDownload().then(urlImage => {
-          console.log("urlImage", urlImage);
-          AuthService.postArticle(
-            pathPost,
-            this.description,
-            urlImage
-          ).then(() => {});
+        let _firstName;
+        let _laseName;
+        await this.getUser().then(res => {
+          _firstName = res.val().firstName;
+          _laseName = res.val().lastName;
         });
+
+        this.getUser();
+        let dataPost = {
+          uid: await AuthService.getUid(),
+          description: this.description,
+          urlImage: "",
+          firstName: _firstName,
+          lastName: _laseName
+        };
+        let pathPost = "/post";
+        if (this.imageName && this.description) {
+          await this.uploadFile().then(() => {
+            alert("Post Ok Image");
+          });
+          this.getDownloadImage().then(res => {
+            dataPost.urlImage = res;
+            AuthService.postArticle(pathPost, dataPost);
+          });
+        } else if (!this.imageName && this.description) {
+          console.log("dataPost", dataPost);
+          AuthService.postArticle(pathPost, dataPost).then(() => {
+            alert("Post Ok ");
+          });
+        } else alert("Please! Title Post");
       }
     }
   }

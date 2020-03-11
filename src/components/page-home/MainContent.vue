@@ -5,7 +5,7 @@
         <ArticlePost></ArticlePost>
       </v-flex>
       <v-flex d-inline-flex xs12>
-        <Posts />
+        <Posts style="width: 100%;" />
       </v-flex>
     </v-layout>
   </v-container>

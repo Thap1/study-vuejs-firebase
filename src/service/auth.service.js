@@ -34,8 +34,9 @@ export default {
   getUid() {
     return firebase.auth().currentUser.uid;
   },
-  getUser(param) {
-    return firebase.database().ref("/users/" + param);
+  getUser(path) {
+      console.log(path)
+    return firebase.database().ref(path).once("value");
   },
   isCheckLogin() {
     return firebase.auth().currentUser;
@@ -50,18 +51,21 @@ export default {
       .child(path)
       .put(file);
   },
-  postArticle(path, description, urlImage) {
+  postArticle(path, dataPost) {
     return firebase
       .database()
-      .ref("/post/" + path)
-      .set({
-        description: description,
-        urlImage: urlImage,
+      .ref(path)
+      .push({
+        uid: dataPost.uid,
+        description: dataPost.description,
+        urlImage: dataPost.urlImage,
         createdAt: firebase.database.ServerValue.TIMESTAMP
       });
   },
   getImagePost(pathImage) {
     return firebase.storage().ref(pathImage);
   },
-  getPostArticle() {}
+  getPostArticle(pathPost) {
+    return firebase.database().ref(pathPost);
+  }
 };
