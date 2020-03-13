@@ -144,7 +144,7 @@ export default {
           description: this.description,
           urlImage: "",
           firstName: _firstName,
-          lastName: _laseName
+          lastName: _laseName,
         };
         let pathPost = "/post";
         if (this.imageName && this.description) {

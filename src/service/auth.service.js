@@ -35,8 +35,10 @@ export default {
     return firebase.auth().currentUser.uid;
   },
   getUser(path) {
-      console.log(path)
-    return firebase.database().ref(path).once("value");
+    return firebase
+      .database()
+      .ref(path)
+      .once("value");
   },
   isCheckLogin() {
     return firebase.auth().currentUser;
@@ -57,6 +59,8 @@ export default {
       .ref(path)
       .push({
         uid: dataPost.uid,
+        firstName: dataPost.firstName,
+        lastName: dataPost.lastName,
         description: dataPost.description,
         urlImage: dataPost.urlImage,
         createdAt: firebase.database.ServerValue.TIMESTAMP
@@ -65,7 +69,23 @@ export default {
   getImagePost(pathImage) {
     return firebase.storage().ref(pathImage);
   },
-  getPostArticle(pathPost) {
-    return firebase.database().ref(pathPost);
+  getPostArticle(pathPost, pathTime) {
+    return firebase
+      .database()
+      .ref(pathPost)
+      .orderByChild(pathTime);
+  },
+  setLikePost(path, dataLike) {
+    return firebase
+      .database()
+      .ref(path)
+      .set(dataLike.isLike);
+  },
+  setDisLikePost(path) {
+    return firebase
+      .database()
+      .ref()
+      .child(path)
+      .remove();
   }
 };
