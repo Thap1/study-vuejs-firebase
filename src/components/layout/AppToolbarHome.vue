@@ -21,7 +21,7 @@
         v-if="!isLogin"
         >Sign Up
       </v-btn>
-      <v-btn v-if="!isLogin" rounded color="primary" @click="dialog = true"
+      <v-btn v-if="!isLogin" rounded color="primary" @click="login"
         >Login
       </v-btn>
       <v-btn v-if="isLogin" rounded color="grey" @click="logout()"
@@ -30,13 +30,10 @@
     </v-app-bar>
     <v-dialog v-model="dialog" max-width="350">
       <v-card>
-        <v-card-title class="headline">Login Form</v-card-title>
+        <v-card-title class="headline">warning Login</v-card-title>
 
         <v-card-text>
-          <v-flex>
-            <v-text-field v-model="email" label="Email"></v-text-field>
-            <v-text-field v-model="password" label="Password"></v-text-field>
-          </v-flex>
+          <p>Please! You can Login after Post.</p>
         </v-card-text>
         <v-card-actions>
           <div style="width: 100%" class="d-flex justify-space-between">
@@ -100,9 +97,9 @@
 </template>
 
 <script>
-// import Constant from "../../util/constant";
 import AuthService from "../../service/auth.service";
 import { bus } from "../../main";
+import Constant from "../../util/constant";
 
 export default {
   name: "AppToolbarHome",
@@ -135,15 +132,7 @@ export default {
 
   methods: {
     login() {
-      this.dialog = !this.dialog;
-      AuthService.login(this.email, this.password)
-        .then(res => {
-          this.$store.dispatch("setUid", res.user.uid);
-          this.checkLogin();
-        })
-        .catch(err => {
-          alert("Oops!" + err.message);
-        });
+      this.$router.push({ name: Constant.ROUTER_NAME.LOGIN });
     },
     checkLogin() {
       if (AuthService.isCheckLogin()) {

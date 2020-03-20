@@ -84,8 +84,18 @@ export default {
   setDisLikePost(path) {
     return firebase
       .database()
-      .ref()
-      .child(path)
+      .ref(path)
       .remove();
+  },
+  setCommentPost(path, dataComment) {
+    return firebase
+      .database()
+      .ref(path)
+      .push({
+          lastName: dataComment.firstName,
+          firstName: dataComment.lastName,
+          contentComment: dataComment.contentComment,
+          createAt: firebase.database.ServerValue.TIMESTAMP
+      });
   }
 };

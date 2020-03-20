@@ -156,7 +156,6 @@ export default {
             AuthService.postArticle(pathPost, dataPost);
           });
         } else if (!this.imageName && this.description) {
-          console.log("dataPost", dataPost);
           AuthService.postArticle(pathPost, dataPost).then(() => {
             alert("Post Ok ");
           });

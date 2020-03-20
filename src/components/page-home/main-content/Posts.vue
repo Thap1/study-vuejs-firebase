@@ -15,8 +15,8 @@
             <img v-else src="../../../assets/imagePost/avata_image.jpg" />
           </v-list-item-avatar>
           <v-list-item-content class="mt-2">
-            <v-list-item-title class="subtitle questrial"
-              >{{ item.lastName }} {{ item.firstName }}</v-list-item-title
+            <v-list-item-title class="subtitle questrial">
+              {{ item.firstName }} {{ item.lastName }}</v-list-item-title
             >
             <v-list-item-subtitle class="questrial caption blue--text"
               >Colleagues</v-list-item-subtitle
@@ -50,125 +50,142 @@
           </template>
         </v-img>
       </v-row>
+      <v-card-text>
+        <v-menu attach open-on-hover top offset-y min-width="200px">
+          <template v-slot:activator="{ on }">
+            <v-flex v-on="on">
+              <v-layout v-if="item.like">
+                <v-avatar size="20" class="ml-1">
+                  <v-img
+                    src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/facebook/65/heavy-black-heart_2764.png"
+                  >
+                  </v-img>
+                </v-avatar>
 
-      <v-menu attach open-on-hover top offset-y min-width="200px">
-        <template v-slot:activator="{ on }">
-          <v-flex v-on="on">
-            <v-layout>
-              <v-avatar size="20" class="ml-1">
-                <v-img
-                  src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/facebook/65/heavy-black-heart_2764.png"
-                >
-                </v-img>
-              </v-avatar>
-              <v-avatar size="20" class="ml-1">
-                <v-img
-                  src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/facebook/65/smiling-face-with-open-mouth-and-smiling-eyes_1f604.png"
-                >
-                </v-img>
-              </v-avatar>
-              <v-avatar size="20" class="ml-1">
-                <v-img
-                  src="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/160/facebook/65/heavy-black-heart_2764.png"
-                >
-                </v-img>
-              </v-avatar>
-              <div class="questrial ml-3">+15</div>
-              <v-spacer></v-spacer>
-              <v-flex class="text-right">
-                <v-layout wrap justify-end>
-                  <div class="questrial mr-3 font-weight-bold ">
-                    2 Comments
-                    <v-icon v-if="false" small>keyboard_arrow_down</v-icon>
-                    <v-icon small>keyboard_arrow_up</v-icon>
-                  </div>
-                  <div class="questrial ml-2 font-weight-bold mr-2">
-                    Share
-                  </div>
-                </v-layout>
-              </v-flex>
-            </v-layout>
-          </v-flex>
-        </template>
-      </v-menu>
-
+                <div class="questrial ml-3">{{ countLikes(item.like) }}</div>
+                <v-spacer></v-spacer>
+                <v-flex class="text-right">
+                  <v-layout wrap justify-end>
+                    <div
+                      v-if="item.comment"
+                      class="questrial mr-3 font-weight-bold "
+                    >
+                      {{
+                        Object.keys(item.comment).length
+                          ? Object.keys(item.comment).length
+                          : ""
+                      }}
+                      Comment
+                      <v-icon v-if="false" small>keyboard_arrow_down</v-icon>
+                      <v-icon small>keyboard_arrow_up</v-icon>
+                    </div>
+                    <!--                    <div class="questrial ml-2 font-weight-bold mr-2">-->
+                    <!--                      Share-->
+                    <!--                    </div>-->
+                  </v-layout>
+                </v-flex>
+              </v-layout>
+            </v-flex>
+          </template>
+        </v-menu>
+      </v-card-text>
       <!-- action and icon -->
 
       <v-card-text>
         <v-divider></v-divider>
         <v-card-actions class="justify-md-space-between">
           <v-btn
-            @click="likePost(index)"
+            @click="likePost(index, item.like)"
+            text
+            class="questrial font-weight-bold text-none ma-2"
+            :color="colorLike(item.like)"
+          >
+            <v-icon right>thumb_up</v-icon>
+            Like
+          </v-btn>
+          <v-btn
+            text
+            class="questrial font-weight-bold text-none ma-2"
+            color="#666666"
+            @click="commentPost(index)"
+          >
+            <v-icon right>comment</v-icon>
+            Comment
+          </v-btn>
+          <v-btn
             text
             class="questrial font-weight-bold text-none"
-            color="blue"
+            color="#666666"
           >
-            <span>Like</span>
-            <v-icon>mdi-heart</v-icon>
-          </v-btn>
-          <v-btn text class="questrial font-weight-bold text-none">
-            <span>Comment</span>
-            <v-icon>comment</v-icon>
-          </v-btn>
-          <v-btn text class="questrial font-weight-bold text-none">
             <span>Share</span>
-            <v-icon>mdi-heart</v-icon>
           </v-btn>
         </v-card-actions>
         <!--        <div class="questrial body1 mb-4">{{ lorem }}</div>-->
         <v-divider></v-divider>
         <v-layout class="py-4"> </v-layout>
-        <v-divider></v-divider>
       </v-card-text>
+      <!--          show comment-->
 
-      <!--    show comment-->
-      <!--          <v-list-item style="align-items:normal">-->
-      <!--            <v-list-item-avatar>-->
-      <!--              <img :src="avatar1" alt="John" />-->
-      <!--            </v-list-item-avatar>-->
-      <!--            <v-list-item-content>-->
-      <!--              <div class="questrial font-weight-bold" style="font-size: 14px">-->
-      <!--                Daniel Frazier-->
-      <!--              </div>-->
-      <!--              <v-list-item-subtitle-->
-      <!--                class="questrial body1 grey&#45;&#45;text text&#45;&#45;darken-1 my-2"-->
-      <!--                >I like this a lot. Good day Jean!</v-list-item-subtitle-->
-      <!--              >-->
-      <!--              <v-layout>-->
-      <!--                <v-flex xs4>-->
-      <!--                  <v-layout row>-->
-      <!--                    <div-->
-      <!--                      class="questrial caption indigo&#45;&#45;text font-weight-bold ml-1 mr-3"-->
-      <!--                    >-->
-      <!--                      Like-->
-      <!--                    </div>-->
-      <!--                    <div class="questrial caption indigo&#45;&#45;text font-weight-bold mr-3">-->
-      <!--                      Reply-->
-      <!--                    </div>-->
-      <!--                    <div class="questrial caption indigo&#45;&#45;text font-weight-bold mr-3">-->
-      <!--                      Translate-->
-      <!--                    </div>-->
-      <!--                    <div class="questrial grey&#45;&#45;text caption font-weight-bold ml-3">-->
-      <!--                      5mins-->
-      <!--                    </div>-->
-      <!--                  </v-layout>-->
-      <!--                </v-flex>-->
-      <!--              </v-layout>-->
-      <!--            </v-list-item-content>-->
-      <!--          </v-list-item>-->
-      <!--         input comment-->
+      <v-list-item
+        style="align-items:normal"
+        v-for="(itemComment, indexComment) in item.comment"
+        :key="indexComment"
+      >
+        <v-list-item-avatar>
+          <img v-if="false" src="../../../assets/imagePost/avata_image.jpg" />
+          <img v-else src="../../../assets/imagePost/avata_image.jpg" />
+        </v-list-item-avatar>
+        <v-list-item-content>
+          <div class="questrial font-weight-bold" style="font-size: 14px">
+            <span v-if="itemComment.firstName">{{
+              itemComment.firstName
+            }}</span>
+            <span v-if="itemComment.lastName">{{ itemComment.lastName }}</span>
+          </div>
+          <v-list-item-subtitle
+            class="questrial body1 grey--text text--darken-1 my-2"
+            >{{ itemComment.contentComment }}</v-list-item-subtitle
+          >
+          <div class=""></div>
+          <v-layout>
+            <v-flex xs4>
+              <v-layout row>
+                <div
+                  class="questrial caption indigo--text font-weight-bold ml-1 mr-3"
+                >
+                  Like
+                </div>
+                <div
+                  class="questrial caption indigo--text font-weight-bold mr-3"
+                >
+                  Reply
+                </div>
+                <div
+                  class="questrial caption indigo--text font-weight-bold mr-3"
+                >
+                  Translate
+                </div>
+                <div class="questrial grey--text caption font-weight-bold ml-3">
+                  {{ timeComment(itemComment.createAt) }}min
+                </div>
+              </v-layout>
+            </v-flex>
+          </v-layout>
+        </v-list-item-content>
+      </v-list-item>
       <div class="px-4">
         <v-text-field
           class="questrial"
           height="45px"
           background-color="grey lighten-3"
-          append-icon="photo_camera sentiment_satisfied"
           placeholder="Write a comment..."
           rounded
+          v-model="item.contentComment"
+          @keyup.enter="
+            item.contentComment ? commentPost(index, item.contentComment) : ''
+          "
         ></v-text-field>
-        <v-btn @click="colorLike()">Click</v-btn>
       </div>
-      <!--      <v-btn @click="userPost()">Click</v-btn>-->
     </v-card>
   </div>
 </template>
@@ -185,18 +202,25 @@ export default {
       avatar1: "",
       avatar2: "",
       avatar3: "",
-      lorem: `xxxxx`
+      lorem: `xxxxx`,
+      likeColor: "",
+      uid: ""
+      // contentComment: ""
     };
   },
   created() {
     this.getPosts();
+    // this.commentPost();
   },
+  watch: {},
   updated() {
-    // console.log("data:::", this.dataPost);
-    // this.colorLike()
+    // this.commentPost();
   },
   methods: {
-    getPosts() {
+    async getPosts() {
+      if (AuthService.isCheckLogin()) {
+        this.uid = await AuthService.getUid();
+      }
       let pathPost = "/post";
       let pathTime = "createdAt";
       AuthService.getPostArticle(pathPost, pathTime).on("value", res => {
@@ -210,35 +234,80 @@ export default {
         this.dataPost.reverse();
       });
     },
-    async likePost(index) {
-      let path =
-        "/post/" +
-        this.dataPost[index].key +
-        "/like/" +
-        (await AuthService.getUid());
-
-      let dataLike = {
-        isLike: true
-      };
-      AuthService.setLikePost(path, dataLike).then(() => alert("Like Ok!"));
-      // let pathDel =
-      //   "/post/" +
-      //   this.dataPost[index].key +
-      //   "/like" +
-      //   (await AuthService.getUid());
-
-      // AuthService.setDisLikePost(pathDel).then(() => alert("DisLike Ok!"));
+    colorLike(param) {
+      if (AuthService.isCheckLogin()) {
+        if (param) {
+          let uidLike = Object.keys(param);
+          if (uidLike.includes(this.uid)) {
+            return "blue";
+          } else return "#666666";
+        } else return "#666666";
+      } else return "#666666";
     },
-     colorLike() {
-      // let uid = await AuthService.getUid()
-       console.log("dataPOST:::", this.dataPost)
-      for (let i = 0; i <= this.dataPost.length - 1; i++) {
-        let likeObject = this.dataPost[i];
-        let AAA= Object.keys(likeObject)
-        console.log("like:::", AAA.like);
+    likePost(index, param) {
+      if (AuthService.isCheckLogin()) {
+        let path = "/post/" + this.dataPost[index].key + "/like/" + this.uid;
+        let dataLike = {
+          isLike: true
+        };
+        if (param) {
+          let uidLike = Object.keys(param);
+          if (uidLike.includes(this.uid)) {
+            AuthService.setDisLikePost(path).then(() => alert("DisLike Ok!"));
+          } else {
+            AuthService.setLikePost(path, dataLike).then(() =>
+              alert("Like Ok!")
+            );
+          }
+        } else {
+          AuthService.setLikePost(path, dataLike).then(() => alert("Like Ok!"));
+        }
+      } else {
+        return false;
       }
-      // return true
+    },
+    countLikes(param) {
+      if (param) {
+        let uidLike = Object.keys(param);
+        return uidLike.length;
+      } else return "";
+    },
+
+    async commentPost(index, contentComment) {
+      console.log(contentComment);
+      let _firstName = "";
+      let _lastName = "";
+      let pathUser = "/users/" + this.uid;
+      await AuthService.getUser(pathUser).then(res => {
+        _firstName = res.val().firstName;
+        _lastName = res.val().lastName;
+      });
+      let path = "/post/" + this.dataPost[index].key + "/comment/";
+      let param = {
+        lastName: _firstName,
+        firstName: _lastName,
+        contentComment: contentComment
+      };
+      AuthService.setCommentPost(path, param)
+        .then(() => {
+          alert("Comment Ok!");
+          contentComment = "";
+        })
+        .catch(err => {
+          alert("Error " + err);
+        });
+    },
+    timeComment(time) {
+      let dateNow = Date.now();
+      let dateComment = new Date(time);
+      let minComment = new Date(dateNow - dateComment).getMinutes();
+      return minComment;
     }
+  },
+  destroyed() {
+    let pathPost = "/post";
+    let pathTime = "createdAt";
+    AuthService.getPostArticle(pathPost, pathTime).off();
   }
 };
 </script>

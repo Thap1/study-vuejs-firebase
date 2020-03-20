@@ -39,7 +39,7 @@ router.beforeEach((to, from, next) => {
         });
     } else {
       next({
-        path: Constant.ROUTER_PATH.HOME
+        path: [Constant.ROUTER_PATH.HOME,Constant.ROUTER_PATH.LOGIN]
       });
     }
   });

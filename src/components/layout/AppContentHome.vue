@@ -1,15 +1,15 @@
 <template>
 
     <v-row>
-      <v-col md="3">
+      <v-col md="3.5">
         <MainContentLeft style="background: red"></MainContentLeft>
       </v-col>
-      <v-col md="6">
+      <v-col md="5">
         <v-card>
           <MainContent style="background: #039be5"></MainContent>
         </v-card>
       </v-col>
-      <v-col md="3">
+      <v-col md="3.5">
         <MainContentRight style="background: #ffa100"></MainContentRight>
       </v-col>
     </v-row>
