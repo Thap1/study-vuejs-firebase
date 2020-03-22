@@ -14,11 +14,7 @@
         solo-inverted
       ></v-text-field>
       <v-spacer></v-spacer>
-      <v-btn
-        @click="dialogRegister = true"
-        color="primary"
-        rounded
-        v-if="!isLogin"
+      <v-btn @click="register" color="primary" rounded v-if="!isLogin"
         >Sign Up
       </v-btn>
       <v-btn v-if="!isLogin" rounded color="primary" @click="login"
@@ -45,89 +41,27 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog v-model="dialogRegister" max-width="420px">
-      <v-card>
-        <v-card-title class="headline">Register Form</v-card-title>
-        <v-card-text>
-          <v-flex>
-            <v-text-field v-model="formData.email" label="Email"></v-text-field>
-            <v-select
-              v-model="select"
-              :items="role"
-              label="Select Role"
-            ></v-select>
-
-            <v-text-field
-              label="Password"
-              v-model="formData.password"
-            ></v-text-field>
-            <v-text-field
-              label="Confirm Password"
-              v-model="formData.confirmPassword"
-            ></v-text-field>
-            <v-text-field
-              label="First Name"
-              v-model="formData.firstName"
-            ></v-text-field>
-            <v-text-field
-              label="Last Name"
-              v-model="formData.lastName"
-            ></v-text-field>
-            <v-text-field
-              label="Gender"
-              v-model="formData.gender"
-            ></v-text-field>
-            <v-text-field
-              label="Phone Number"
-              v-model="formData.phoneNumber"
-            ></v-text-field>
-          </v-flex>
-        </v-card-text>
-        <v-card-actions>
-          <div style="width: 100%" class="d-flex justify-space-between">
-            <v-btn color="green darken-1" text @click="dialogRegister = false">
-              Close
-            </v-btn>
-            <v-btn color="primary" @click="register()">Create</v-btn>
-          </div>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </div>
 </template>
 
 <script>
 import AuthService from "../../service/auth.service";
-import { bus } from "../../main";
+// import { bus } from "../../main";
 import Constant from "../../util/constant";
 
 export default {
   name: "AppToolbarHome",
   data() {
     return {
-      email: "",
-      select: null,
-      password: "",
       isLogin: false,
-      dialog: false,
-      dialogRegister: false,
-      formData: {
-        email: "",
-        password: "",
-        confirmPassword: "",
-        firstName: "",
-        lastName: "",
-        gender: "",
-        phoneNumber: ""
-      },
-      role: ["User", "Admin", "Shop"]
+      dialog: false
     };
   },
   created() {
     this.checkLogin();
-    bus.$on("openDialogLogin", value => {
-      this.dialog = value;
-    });
+    // bus.$on("openDialogLogin", value => {
+    //   this.dialog = value;
+    // });
   },
 
   methods: {
@@ -145,11 +79,7 @@ export default {
       });
     },
     register() {
-      AuthService.registerAcc(this.formData);
-      this.dialogRegister = !this.dialogRegister;
-    },
-    setRole() {
-      this.$store.dispatch();
+      this.$router.push({ name: Constant.ROUTER_NAME.REGISTER });
     }
   }
 };

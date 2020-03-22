@@ -137,9 +137,8 @@
         </v-list-item-avatar>
         <v-list-item-content>
           <div class="questrial font-weight-bold" style="font-size: 14px">
-            <span v-if="itemComment.firstName">{{
-              itemComment.firstName
-            }}</span>
+            <span v-if="itemComment.firstName">{{ itemComment.firstName }}</span
+            >&#32;
             <span v-if="itemComment.lastName">{{ itemComment.lastName }}</span>
           </div>
           <v-list-item-subtitle
@@ -148,7 +147,7 @@
           >
           <div class=""></div>
           <v-layout>
-            <v-flex xs4>
+            <v-flex xs5>
               <v-layout row>
                 <div
                   class="questrial caption indigo--text font-weight-bold ml-1 mr-3"
@@ -166,7 +165,7 @@
                   Translate
                 </div>
                 <div class="questrial grey--text caption font-weight-bold ml-3">
-                  {{ timeComment(itemComment.createAt) }}min
+                  {{ timeComment(itemComment.createAt) }}
                 </div>
               </v-layout>
             </v-flex>
@@ -180,13 +179,15 @@
           background-color="grey lighten-3"
           placeholder="Write a comment..."
           rounded
-          v-model="item.contentComment"
+          v-model.trim="item.contentComment"
           @keyup.enter="
             item.contentComment ? commentPost(index, item.contentComment) : ''
           "
         ></v-text-field>
       </div>
     </v-card>
+    <ScrollLoader :loader-method="callApi" :loader-disable="disable">
+    </ScrollLoader>
   </div>
 </template>
 
@@ -194,15 +195,12 @@
 import AuthService from "../../../service/auth.service";
 
 export default {
-  components: {},
+  name: "Posts",
   data() {
     return {
+      disable: false,
+      postLimit: 1,
       dataPost: [],
-      dataKey: [],
-      avatar1: "",
-      avatar2: "",
-      avatar3: "",
-      lorem: `xxxxx`,
       likeColor: "",
       uid: ""
       // contentComment: ""
@@ -210,29 +208,35 @@ export default {
   },
   created() {
     this.getPosts();
-    // this.commentPost();
   },
-  watch: {},
-  updated() {
-    // this.commentPost();
-  },
+
   methods: {
     async getPosts() {
       if (AuthService.isCheckLogin()) {
         this.uid = await AuthService.getUid();
       }
+      this.callApi();
+    },
+    callApi() {
       let pathPost = "/post";
       let pathTime = "createdAt";
-      AuthService.getPostArticle(pathPost, pathTime).on("value", res => {
+      if (this.postLimit <= 20) {
+        this.postLimit = 3 + this.postLimit;
+          console.log("this.postLimit",this.postLimit)
         let data = [];
-        res.forEach(result => {
-          let item = result.val();
-          item.key = result.key;
-          data.push(item);
-          this.dataPost = data;
-        });
-        this.dataPost.reverse();
-      });
+        AuthService.getPostArticle(pathPost, pathTime).limitToLast(this.postLimit).on(
+          "value",
+          res => {
+            res.forEach(result => {
+              let item = result.val();
+              item.key = result.key;
+              data.push(item);
+              this.dataPost = data;
+            });
+            this.dataPost.reverse();
+          }
+        );
+      }
     },
     colorLike(param) {
       if (AuthService.isCheckLogin()) {
@@ -253,14 +257,12 @@ export default {
         if (param) {
           let uidLike = Object.keys(param);
           if (uidLike.includes(this.uid)) {
-            AuthService.setDisLikePost(path).then(() => alert("DisLike Ok!"));
+            AuthService.setDisLikePost(path);
           } else {
-            AuthService.setLikePost(path, dataLike).then(() =>
-              alert("Like Ok!")
-            );
+            AuthService.setLikePost(path, dataLike);
           }
         } else {
-          AuthService.setLikePost(path, dataLike).then(() => alert("Like Ok!"));
+          AuthService.setLikePost(path, dataLike);
         }
       } else {
         return false;
@@ -274,7 +276,6 @@ export default {
     },
 
     async commentPost(index, contentComment) {
-      console.log(contentComment);
       let _firstName = "";
       let _lastName = "";
       let pathUser = "/users/" + this.uid;
@@ -286,11 +287,10 @@ export default {
       let param = {
         lastName: _firstName,
         firstName: _lastName,
-        contentComment: contentComment
+        contentComment: contentComment.trim()
       };
       AuthService.setCommentPost(path, param)
         .then(() => {
-          alert("Comment Ok!");
           contentComment = "";
         })
         .catch(err => {
@@ -300,14 +300,29 @@ export default {
     timeComment(time) {
       let dateNow = Date.now();
       let dateComment = new Date(time);
-      let minComment = new Date(dateNow - dateComment).getMinutes();
-      return minComment;
+
+      let res = Math.abs(dateNow - dateComment) / 1000;
+
+      let hours = Math.floor(res / 3600) % 24;
+
+      let minutes = Math.floor(res / 60) % 60;
+
+      let days = Math.floor(res / 86400);
+      let result = "";
+      if (days === 0) {
+        if (hours === 0) {
+          result = minutes + " min";
+        } else result = hours + " hour";
+      } else result = days + " day";
+
+      return result;
     }
   },
   destroyed() {
     let pathPost = "/post";
     let pathTime = "createdAt";
-    AuthService.getPostArticle(pathPost, pathTime).off();
+    // let limit = 0;
+    AuthService.getPostArticle(pathPost,pathTime).off();
   }
 };
 </script>

@@ -26,7 +26,8 @@ router.beforeEach((to, from, next) => {
             if (to.path !== Constant.ROUTER_PATH.HOME) {
               return next({ path: Constant.ROUTER_PATH.HOME });
             }
-          } else {
+          }
+          else {
             if (to.matched.some(res => res.meta.auth)) {
               next({
                 path: Constant.ROUTER_PATH.HOME,
@@ -39,7 +40,11 @@ router.beforeEach((to, from, next) => {
         });
     } else {
       next({
-        path: [Constant.ROUTER_PATH.HOME,Constant.ROUTER_PATH.LOGIN]
+        path: [
+          Constant.ROUTER_PATH.HOME,
+          Constant.ROUTER_PATH.LOGIN,
+          Constant.ROUTER_PATH.REGISTER
+        ]
       });
     }
   });

@@ -2,14 +2,16 @@ import Vue from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+import ScrollLoader from "vue-scroll-loader";
 import vuetify from "./plugins/vuetify";
 import firebase from "firebase";
 import { ValidationProvider } from "vee-validate";
 
 Vue.config.productionTip = false;
+Vue.use(ScrollLoader);
 Vue.component("ValidationProvider", ValidationProvider);
+// Vue.component("ScrollLoader", ScrollLoader);
 let app = "";
-export const bus = new Vue();
 firebase.initializeApp({
   apiKey: "AIzaSyDqhok_4rAPoXfJS4Qiz5IkOAcC7g4sHcc",
   authDomain: "study-vuejs-login.firebaseapp.com",

@@ -1,19 +1,15 @@
 <template>
-
-    <v-row>
-      <v-col md="3.5">
-        <MainContentLeft style="background: red"></MainContentLeft>
-      </v-col>
-      <v-col md="5">
-        <v-card>
-          <MainContent style="background: #039be5"></MainContent>
-        </v-card>
-      </v-col>
-      <v-col md="3.5">
-        <MainContentRight style="background: #ffa100"></MainContentRight>
-      </v-col>
-    </v-row>
-
+  <v-row>
+    <v-col md="3.5">
+      <MainContentLeft style="background: red"></MainContentLeft>
+    </v-col>
+    <v-col md="5">
+        <MainContent></MainContent>
+    </v-col>
+    <v-col md="3.5">
+      <MainContentRight style="background: #ffa100"></MainContentRight>
+    </v-col>
+  </v-row>
 </template>
 
 <script>
@@ -22,7 +18,7 @@ import MainContentLeft from "../page-home/MainContentLeft";
 import MainContentRight from "../page-home/MainContentRight";
 export default {
   name: "AppContentHome",
-  components: {MainContentRight, MainContentLeft, MainContent }
+  components: { MainContentRight, MainContentLeft, MainContent }
 };
 </script>
 

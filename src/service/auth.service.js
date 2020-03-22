@@ -73,7 +73,7 @@ export default {
     return firebase
       .database()
       .ref(pathPost)
-      .orderByChild(pathTime);
+      .orderByChild(pathTime)
   },
   setLikePost(path, dataLike) {
     return firebase
@@ -92,10 +92,10 @@ export default {
       .database()
       .ref(path)
       .push({
-          lastName: dataComment.firstName,
-          firstName: dataComment.lastName,
-          contentComment: dataComment.contentComment,
-          createAt: firebase.database.ServerValue.TIMESTAMP
+        lastName: dataComment.firstName,
+        firstName: dataComment.lastName,
+        contentComment: dataComment.contentComment,
+        createAt: firebase.database.ServerValue.TIMESTAMP
       });
   }
 };

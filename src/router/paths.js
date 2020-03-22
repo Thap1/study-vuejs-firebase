@@ -1,6 +1,7 @@
 import Constant from "../util/constant";
 import Home from "../components/dashboard/Home";
 import Login from "../components/dashboard/Login"
+import Register from "../components/dashboard/Register"
 import DashboardAdmin from "../components/dashboard/DashboardAdmin";
 
 export default [
@@ -13,6 +14,11 @@ export default [
     path: "/Login",
     name: Constant.ROUTER_NAME.LOGIN,
     component: Login
+  },
+  {
+    path: "/Register",
+    name: Constant.ROUTER_NAME.REGISTER,
+    component: Register
   },
 
   {

@@ -2,9 +2,9 @@
   <div class="">
     <v-card class="article-post" rounded outlined>
       <v-card-title>
-        <h3>
-          Tạo bài viết
-        </h3>
+        <h4>
+          Create New Post
+        </h4>
       </v-card-title>
       <v-card-text>
         <v-layout>
@@ -12,7 +12,7 @@
             <v-textarea
               v-model="description"
               solo
-              label="What's on your mind, Uzir?"
+              label="What's on your mind?"
               height="100px"
             >
             </v-textarea>
@@ -168,6 +168,6 @@ export default {
 
 <style scoped>
 .article-post {
-  margin-top: 20px;
+  margin-top: 15px;
 }
 </style>
