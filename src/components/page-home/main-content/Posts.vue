@@ -76,8 +76,8 @@
                           : ""
                       }}
                       Comment
-                      <v-icon v-if="false" small>keyboard_arrow_down</v-icon>
-                      <v-icon small>keyboard_arrow_up</v-icon>
+                      <!--                      <v-icon v-if="false" small>keyboard_arrow_down</v-icon>-->
+                      <!--                      <v-icon small>keyboard_arrow_up</v-icon>-->
                     </div>
                     <!--                    <div class="questrial ml-2 font-weight-bold mr-2">-->
                     <!--                      Share-->
@@ -122,7 +122,6 @@
         </v-card-actions>
         <!--        <div class="questrial body1 mb-4">{{ lorem }}</div>-->
         <v-divider></v-divider>
-        <v-layout class="py-4"> </v-layout>
       </v-card-text>
       <!--          show comment-->
 
@@ -136,16 +135,18 @@
           <img v-else src="../../../assets/imagePost/avata_image.jpg" />
         </v-list-item-avatar>
         <v-list-item-content>
-          <div class="questrial font-weight-bold" style="font-size: 14px">
-            <span v-if="itemComment.firstName">{{ itemComment.firstName }}</span
-            >&#32;
-            <span v-if="itemComment.lastName">{{ itemComment.lastName }}</span>
+          <div>
+            <span
+              v-if="itemComment.firstName"
+              class=" font-weight-bold"
+              style=" font-family: inherit;line-height: 16px; font-size: 14px;color: #385898;"
+              >{{ itemComment.firstName }}&#32;{{ itemComment.lastName }}
+            </span>
+            <span
+              style="font-family: inherit;font-size: 14px;line-height: 16px; color: #1c1e21; margin-left: 10px"
+              >{{ itemComment.contentComment }}
+            </span>
           </div>
-          <v-list-item-subtitle
-            class="questrial body1 grey--text text--darken-1 my-2"
-            >{{ itemComment.contentComment }}</v-list-item-subtitle
-          >
-          <div class=""></div>
           <v-layout>
             <v-flex xs5>
               <v-layout row>
@@ -222,11 +223,11 @@ export default {
       let pathTime = "createdAt";
       if (this.postLimit <= 20) {
         this.postLimit = 3 + this.postLimit;
-          console.log("this.postLimit",this.postLimit)
+        console.log("this.postLimit", this.postLimit);
         let data = [];
-        AuthService.getPostArticle(pathPost, pathTime).limitToLast(this.postLimit).on(
-          "value",
-          res => {
+        AuthService.getPostArticle(pathPost, pathTime)
+          .limitToLast(this.postLimit)
+          .on("value", res => {
             res.forEach(result => {
               let item = result.val();
               item.key = result.key;
@@ -234,8 +235,7 @@ export default {
               this.dataPost = data;
             });
             this.dataPost.reverse();
-          }
-        );
+          });
       }
     },
     colorLike(param) {
@@ -276,26 +276,28 @@ export default {
     },
 
     async commentPost(index, contentComment) {
-      let _firstName = "";
-      let _lastName = "";
-      let pathUser = "/users/" + this.uid;
-      await AuthService.getUser(pathUser).then(res => {
-        _firstName = res.val().firstName;
-        _lastName = res.val().lastName;
-      });
-      let path = "/post/" + this.dataPost[index].key + "/comment/";
-      let param = {
-        lastName: _firstName,
-        firstName: _lastName,
-        contentComment: contentComment.trim()
-      };
-      AuthService.setCommentPost(path, param)
-        .then(() => {
-          contentComment = "";
-        })
-        .catch(err => {
-          alert("Error " + err);
+      if (AuthService.isCheckLogin()) {
+        let _firstName = "";
+        let _lastName = "";
+        let pathUser = "/users/" + this.uid;
+        await AuthService.getUser(pathUser).then(res => {
+          _firstName = res.val().firstName;
+          _lastName = res.val().lastName;
         });
+        let path = "/post/" + this.dataPost[index].key + "/comment/";
+        let param = {
+          lastName: _firstName,
+          firstName: _lastName,
+          contentComment: contentComment.trim()
+        };
+        AuthService.setCommentPost(path, param)
+          .then(() => {
+            contentComment = "";
+          })
+          .catch(err => {
+            alert("Error " + err);
+          });
+      }
     },
     timeComment(time) {
       let dateNow = Date.now();
@@ -322,12 +324,15 @@ export default {
     let pathPost = "/post";
     let pathTime = "createdAt";
     // let limit = 0;
-    AuthService.getPostArticle(pathPost,pathTime).off();
+    AuthService.getPostArticle(pathPost, pathTime).off();
   }
 };
 </script>
 
 <style scoped>
+  .text-comment {
+  
+  }
 .article-post {
   margin-top: 10px;
 }
