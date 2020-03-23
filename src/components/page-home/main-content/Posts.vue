@@ -68,7 +68,7 @@
                   <v-layout wrap justify-end>
                     <div
                       v-if="item.comment"
-                      class="questrial mr-3 font-weight-bold "
+                      class="questrial  mr-3 font-weight-bold "
                     >
                       {{
                         Object.keys(item.comment).length
@@ -97,7 +97,7 @@
           <v-btn
             @click="likePost(index, item.like)"
             text
-            class="questrial font-weight-bold text-none ma-2"
+            class="font-weight-bold text-none ma-2"
             :color="colorLike(item.like)"
           >
             <v-icon right>thumb_up</v-icon>
@@ -105,7 +105,7 @@
           </v-btn>
           <v-btn
             text
-            class="questrial font-weight-bold text-none ma-2"
+            class="font-weight-bold text-none ma-2"
             color="#666666"
             @click="commentPost(index)"
           >
@@ -114,7 +114,7 @@
           </v-btn>
           <v-btn
             text
-            class="questrial font-weight-bold text-none"
+            class="font-weight-bold text-none"
             color="#666666"
           >
             <span>Share</span>
@@ -134,37 +134,36 @@
           <img v-if="false" src="../../../assets/imagePost/avata_image.jpg" />
           <img v-else src="../../../assets/imagePost/avata_image.jpg" />
         </v-list-item-avatar>
+
         <v-list-item-content>
-          <div>
-            <span
-              v-if="itemComment.firstName"
-              class=" font-weight-bold"
-              style=" font-family: inherit;line-height: 16px; font-size: 14px;color: #385898;"
-              >{{ itemComment.firstName }}&#32;{{ itemComment.lastName }}
-            </span>
-            <span
-              style="font-family: inherit;font-size: 14px;line-height: 16px; color: #1c1e21; margin-left: 10px"
-              >{{ itemComment.contentComment }}
-            </span>
-          </div>
+          <v-list
+            rounded
+            style="background: rgb(239, 239, 239);border-radius: 15px"
+          >
+            <div>
+              <span
+                v-if="itemComment.firstName"
+                class="post-comment-name font-weight-bold "
+                style=""
+                >{{ itemComment.firstName }}&#32;{{ itemComment.lastName }}
+              </span>
+              <span class="post-text-comment"
+                >{{ itemComment.contentComment }}
+              </span>
+            </div>
+          </v-list>
           <v-layout>
-            <v-flex xs5>
+            <v-flex>
               <v-layout row>
-                <div
-                  class="questrial caption indigo--text font-weight-bold ml-1 mr-3"
-                >
+                <span class=" caption indigo--text font-weight-bold ml-1 mr-3">
                   Like
-                </div>
-                <div
-                  class="questrial caption indigo--text font-weight-bold mr-3"
-                >
+                </span>
+                <span class=" caption indigo--text font-weight-bold mr-3">
                   Reply
-                </div>
-                <div
-                  class="questrial caption indigo--text font-weight-bold mr-3"
-                >
+                </span>
+                <span class=" caption indigo--text font-weight-bold mr-3">
                   Translate
-                </div>
+                </span>
                 <div class="questrial grey--text caption font-weight-bold ml-3">
                   {{ timeComment(itemComment.createAt) }}
                 </div>
@@ -173,6 +172,7 @@
           </v-layout>
         </v-list-item-content>
       </v-list-item>
+
       <div class="px-4">
         <v-text-field
           class="questrial"
@@ -203,8 +203,8 @@ export default {
       postLimit: 1,
       dataPost: [],
       likeColor: "",
-      uid: ""
-      // contentComment: ""
+      uid: "",
+      isCheckLogin: ""
     };
   },
   created() {
@@ -212,9 +212,11 @@ export default {
   },
 
   methods: {
-    async getPosts() {
+    getPosts() {
       if (AuthService.isCheckLogin()) {
-        this.uid = await AuthService.getUid();
+        console.log("sdsdsdsd");
+        this.uid = this.$store.getters.uid;
+        this.isCheckLogin = AuthService.isCheckLogin();
       }
       this.callApi();
     },
@@ -223,7 +225,6 @@ export default {
       let pathTime = "createdAt";
       if (this.postLimit <= 20) {
         this.postLimit = 3 + this.postLimit;
-        console.log("this.postLimit", this.postLimit);
         let data = [];
         AuthService.getPostArticle(pathPost, pathTime)
           .limitToLast(this.postLimit)
@@ -239,7 +240,7 @@ export default {
       }
     },
     colorLike(param) {
-      if (AuthService.isCheckLogin()) {
+      if (this.isCheckLogin) {
         if (param) {
           let uidLike = Object.keys(param);
           if (uidLike.includes(this.uid)) {
@@ -249,7 +250,7 @@ export default {
       } else return "#666666";
     },
     likePost(index, param) {
-      if (AuthService.isCheckLogin()) {
+      if (this.isCheckLogin) {
         let path = "/post/" + this.dataPost[index].key + "/like/" + this.uid;
         let dataLike = {
           isLike: true
@@ -276,7 +277,7 @@ export default {
     },
 
     async commentPost(index, contentComment) {
-      if (AuthService.isCheckLogin()) {
+      if (this.isCheckLogin) {
         let _firstName = "";
         let _lastName = "";
         let pathUser = "/users/" + this.uid;
@@ -316,23 +317,31 @@ export default {
           result = minutes + " min";
         } else result = hours + " hour";
       } else result = days + " day";
-
       return result;
     }
   },
   destroyed() {
     let pathPost = "/post";
     let pathTime = "createdAt";
-    // let limit = 0;
     AuthService.getPostArticle(pathPost, pathTime).off();
   }
 };
 </script>
 
 <style scoped>
-  .text-comment {
-  
-  }
+.post-text-comment {
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 16px;
+  color: #1c1e21;
+  margin-left: 10px;
+}
+.post-comment-name {
+  font-family: inherit;
+  line-height: 16px;
+  font-size: 15px;
+  color: #385898;
+}
 .article-post {
   margin-top: 10px;
 }

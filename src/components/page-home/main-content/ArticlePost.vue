@@ -2,9 +2,9 @@
   <div class="">
     <v-card class="article-post" rounded outlined>
       <v-card-title>
-        <h4>
-          Create New Post
-        </h4>
+        <span>
+          Create New a Post
+        </span>
       </v-card-title>
       <v-card-text>
         <v-layout>
@@ -22,18 +22,26 @@
               max-height="70px"
               max-width="70px"
             ></v-img>
-            <v-btn
-              color="primary"
-              class="text-none"
-              depressed
-              :loading="isSelecting"
-              @click="onButtonClick()"
-            >
-              <v-icon left>
-                cloud_upload
-              </v-icon>
-              {{ buttonImage }}
-            </v-btn>
+
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-btn
+                  color="primary"
+                  class="text-none"
+                  style="margin-top: 3%;"
+                  depressed
+                  :loading="isSelecting"
+                  @click="onButtonClick()"
+                  v-on="on"
+                >
+                  <v-icon left>
+                    cloud_upload
+                  </v-icon>
+                  <span class="hidden-text">{{ buttonImage }}</span>
+                </v-btn>
+              </template>
+              <span>{{ buttonImage }}</span>
+            </v-tooltip>
             <input
               ref="uploader"
               class="d-none"
@@ -47,7 +55,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="primary" @click="posts()">Đăng bài</v-btn>
+        <v-btn color="primary" @click="posts()">Post</v-btn>
       </v-card-actions>
     </v-card>
   </div>
@@ -60,11 +68,12 @@ export default {
   name: "ArticlePost",
   data() {
     return {
+      isCheckLogin: "",
+      storeUid: "",
       image: [],
       defaultButtonImage: "Image Upload",
       isSelecting: false,
       description: "",
-      uid: "",
       fullPathImage: "",
       postImage: "",
       imageName: "",
@@ -76,7 +85,12 @@ export default {
       return this.imageName ? this.imageName : this.defaultButtonImage;
     }
   },
-  created() {},
+  created() {
+    if (AuthService.isCheckLogin()) {
+      this.isCheckLogin = AuthService.isCheckLogin();
+      this.storeUid = this.$store.getters.uid;
+    }
+  },
   watch: {
     image: "isCheckImage"
   },
@@ -122,13 +136,13 @@ export default {
       return AuthService.getImagePost(this.fullPathImage).getDownloadURL();
     },
 
-    async getUser() {
-      let pathUser = "/users/" + (await AuthService.getUid());
+    getUser() {
+      let pathUser = "/users/" + this.storeUid;
       return AuthService.getUser(pathUser);
     },
 
     async posts() {
-      if (!AuthService.isCheckLogin()) {
+      if (!this.isCheckLogin) {
         bus.$emit("openDialogLogin", true);
       } else {
         let _firstName;
@@ -137,27 +151,29 @@ export default {
           _firstName = res.val().firstName;
           _laseName = res.val().lastName;
         });
-
-        this.getUser();
         let dataPost = {
-          uid: await AuthService.getUid(),
+          uid: this.storeUid,
           description: this.description,
           urlImage: "",
           firstName: _firstName,
-          lastName: _laseName,
+          lastName: _laseName
         };
         let pathPost = "/post";
         if (this.imageName && this.description) {
-          await this.uploadFile().then(() => {
-            alert("Post Ok Image");
-          });
+          await this.uploadFile();
+
           this.getDownloadImage().then(res => {
             dataPost.urlImage = res;
-            AuthService.postArticle(pathPost, dataPost);
+            AuthService.postArticle(pathPost, dataPost).then(() => {
+              alert("Post Ok ");
+              this.description = "";
+              this.image = "";
+            });
           });
         } else if (!this.imageName && this.description) {
           AuthService.postArticle(pathPost, dataPost).then(() => {
             alert("Post Ok ");
+            this.description = "";
           });
         } else alert("Please! Title Post");
       }
@@ -169,5 +185,14 @@ export default {
 <style scoped>
 .article-post {
   margin-top: 15px;
+}
+.hidden-text {
+  display: block;
+  margin-left: 2px;
+  max-width: 150px;
+  overflow: hidden;
+  padding-left: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 </style>

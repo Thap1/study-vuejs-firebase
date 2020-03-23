@@ -1,28 +1,64 @@
 <template>
   <div class="">
     <v-app-bar app clipped-right color="blue-grey" dark>
-      <span class="title ml-3 mr-5"
-        >Hello&nbsp;<span class="font-weight-light">World</span></span
-      >
-      <v-spacer></v-spacer>
-      <v-text-field
-        flat
-        hide-details
-        just-center
-        label="Search"
-        prepend-inner-icon="search"
-        solo-inverted
-      ></v-text-field>
-      <v-spacer></v-spacer>
-      <v-btn @click="register" color="primary" rounded v-if="!isLogin"
-        >Sign Up
-      </v-btn>
-      <v-btn v-if="!isLogin" rounded color="primary" @click="login"
-        >Login
-      </v-btn>
-      <v-btn v-if="isLogin" rounded color="grey" @click="logout()"
-        >Logout
-      </v-btn>
+      <v-row>
+        <v-col cols="4"> </v-col>
+        <v-col cols="1">
+          <span class="title ml-3 mr-5 md1 "
+            >Hello&nbsp;<span class="font-weight-light">World</span>
+          </span>
+        </v-col>
+        <v-col cols="2">
+          <v-text-field
+            flat
+            rounded
+            hide-details
+            dense
+            just-center
+            label="Search"
+            prepend-inner-icon="search"
+            solo-inverted
+            style="max-width: 400px"
+          ></v-text-field
+        ></v-col>
+        <v-col cols="3"></v-col>
+        <v-col cols="2" >
+
+
+          <v-btn @click="register" color="primary" class="justify-end" rounded v-if="!isLogin"
+            >Sign Up
+          </v-btn>
+          <v-btn class="justify-end" v-if="!isLogin" rounded color="primary" @click="login"
+            >Login
+          </v-btn>
+          <v-btn class="float-right" v-if="isLogin" rounded color="grey" @click="logout()"
+            >Logout
+          </v-btn>
+        </v-col>
+
+        <!--        <v-spacer></v-spacer>-->
+        <!--        <v-text-field-->
+        <!--            flat-->
+        <!--            rounded-->
+        <!--            hide-details-->
+        <!--            dense-->
+        <!--            just-center-->
+        <!--            label="Search"-->
+        <!--            prepend-inner-icon="search"-->
+        <!--            solo-inverted-->
+        <!--            style="max-width: 400px"-->
+        <!--        ></v-text-field>-->
+        <!--        <v-spacer></v-spacer>-->
+        <!--        <v-btn @click="register" color="primary" rounded v-if="!isLogin"-->
+        <!--        >Sign Up-->
+        <!--        </v-btn>-->
+        <!--        <v-btn v-if="!isLogin" rounded color="primary" @click="login"-->
+        <!--        >Login-->
+        <!--        </v-btn>-->
+        <!--        <v-btn v-if="isLogin" rounded color="grey" @click="logout()"-->
+        <!--        >Logout-->
+        <!--        </v-btn>-->
+      </v-row>
     </v-app-bar>
     <v-dialog v-model="dialog" max-width="350">
       <v-card>
