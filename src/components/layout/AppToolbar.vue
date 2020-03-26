@@ -26,7 +26,6 @@ export default {
     logout() {
       this.isLogin = false;
       AuthService.logout();
-      console.log("AuthService.getTokenUid()::::", AuthService.getTokenUid());
     }
   }
 };

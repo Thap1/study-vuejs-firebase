@@ -112,11 +112,7 @@
             <v-icon right>comment</v-icon>
             Comment
           </v-btn>
-          <v-btn
-            text
-            class="font-weight-bold text-none"
-            color="#666666"
-          >
+          <v-btn text class="font-weight-bold text-none" color="#666666">
             <span>Share</span>
           </v-btn>
         </v-card-actions>
@@ -187,7 +183,7 @@
         ></v-text-field>
       </div>
     </v-card>
-    <ScrollLoader :loader-method="callApi" :loader-disable="disable">
+    <ScrollLoader :loader-method="loadingPage" :loader-disable="disable">
     </ScrollLoader>
   </div>
 </template>
@@ -200,43 +196,47 @@ export default {
   data() {
     return {
       disable: false,
-      postLimit: 1,
+      postLimit: 3,
       dataPost: [],
       likeColor: "",
       uid: "",
-      isCheckLogin: ""
+      isCheckLogin: "",
+      pathPost: "/post",
+      getTime: "createdAt"
     };
   },
   created() {
     this.getPosts();
   },
+  watch: {
+    postLimit: "callApi"
+  },
 
   methods: {
     getPosts() {
       if (AuthService.isCheckLogin()) {
-        console.log("sdsdsdsd");
         this.uid = this.$store.getters.uid;
         this.isCheckLogin = AuthService.isCheckLogin();
       }
       this.callApi();
     },
     callApi() {
-      let pathPost = "/post";
-      let pathTime = "createdAt";
-      if (this.postLimit <= 20) {
-        this.postLimit = 3 + this.postLimit;
-        let data = [];
-        AuthService.getPostArticle(pathPost, pathTime)
-          .limitToLast(this.postLimit)
-          .on("value", res => {
-            res.forEach(result => {
-              let item = result.val();
-              item.key = result.key;
-              data.push(item);
-              this.dataPost = data;
-            });
-            this.dataPost.reverse();
+      AuthService.getPostArticle(this.pathPost, this.getTime)
+        .limitToLast(this.postLimit)
+        .on("value", res => {
+          let data = [];
+          res.forEach(result => {
+            let item = result.val();
+            item.key = result.key;
+            data.push(item);
+            this.dataPost = data;
           });
+          this.dataPost.reverse();
+        });
+    },
+    loadingPage() {
+      if (this.postLimit < 20) {
+        this.postLimit = 3 + this.postLimit;
       }
     },
     colorLike(param) {
@@ -249,6 +249,7 @@ export default {
         } else return "#666666";
       } else return "#666666";
     },
+
     likePost(index, param) {
       if (this.isCheckLogin) {
         let path = "/post/" + this.dataPost[index].key + "/like/" + this.uid;

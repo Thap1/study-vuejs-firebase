@@ -4,12 +4,14 @@ export default {
     HOME: "Home",
     LOGIN: "Login",
     REGISTER: "Register",
-    DASHBOARD_ADMIN: "DashBoardAdmin"
+    DASHBOARD_ADMIN: "DashBoardAdmin",
+    DEMO: "Demo"
   },
   ROUTER_PATH: {
     HOME: "/home",
     DASHBOARD_ADMIN: "/dashBoardAdmin",
     LOGIN: "/login",
-    REGISTER: "/register"
+    REGISTER: "/register",
+    DEMO: "/demo"
   }
 };

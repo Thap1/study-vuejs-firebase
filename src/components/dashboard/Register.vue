@@ -99,9 +99,16 @@ export default {
   },
   methods: {
     register() {
-      AuthService.registerAcc(this.formData);
-      this.$router.push({ name: Constant.ROUTER_NAME.HOME });
-      this.dialogRegister = !this.dialogRegister;
+      AuthService.setUserAuth(this.formData).then(res => {
+        let path = "/users/" + res.user.uid;
+        AuthService.setUserInfo(path, this.formData).then(() => {
+          this.$router.push({ name: Constant.ROUTER_NAME.HOME });
+        });
+      });
+
+      // AuthService.registerAcc(this.formData);
+      // this.$router.push({ name: Constant.ROUTER_NAME.HOME });
+      // this.dialogRegister = !this.dialogRegister;
     },
     close() {
       this.$router.push({ name: Constant.ROUTER_NAME.HOME });

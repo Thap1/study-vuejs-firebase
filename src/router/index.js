@@ -43,7 +43,8 @@ router.beforeEach((to, from, next) => {
         path: [
           Constant.ROUTER_PATH.HOME,
           Constant.ROUTER_PATH.LOGIN,
-          Constant.ROUTER_PATH.REGISTER
+          Constant.ROUTER_PATH.REGISTER,
+          Constant.ROUTER_PATH.DEMO
         ]
       });
     }

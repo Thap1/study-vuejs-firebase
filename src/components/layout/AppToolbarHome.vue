@@ -5,7 +5,7 @@
         <v-col cols="4"> </v-col>
         <v-col cols="1">
           <span class="title ml-3 mr-5 md1 "
-            >Hello&nbsp;<span class="font-weight-light">World</span>
+            >Hello&nbsp;
           </span>
         </v-col>
         <v-col cols="2">

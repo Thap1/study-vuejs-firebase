@@ -42,14 +42,45 @@
               </template>
               <span>{{ buttonImage }}</span>
             </v-tooltip>
-            <input
-              ref="uploader"
-              class="d-none"
-              type="file"
-              multiple
-              accept="image/*"
-              @change="onFileChanged"
-            />
+            <ImageUploader
+              class=""
+              :preview="true"
+              :className="['fileinput', { 'fileinput--loaded': hasImage }]"
+              capture="environment"
+              :debug="1"
+              doNotResize="gif"
+              :quaquality="0.7"
+              :autoRotate="true"
+              outputFormat="verbose"
+              @input="setImage"
+            >
+              <label for="fileInput" slot="upload-label">
+                <figure>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                  >
+                    <path
+                      class="path1"
+                      d="M9.5 19c0 3.59 2.91 6.5 6.5 6.5s6.5-2.91 6.5-6.5-2.91-6.5-6.5-6.5-6.5 2.91-6.5 6.5zM30 8h-7c-0.5-2-1-4-3-4h-8c-2 0-2.5 2-3 4h-7c-1.1 0-2 0.9-2 2v18c0 1.1 0.9 2 2 2h28c1.1 0 2-0.9 2-2v-18c0-1.1-0.9-2-2-2zM16 27.875c-4.902 0-8.875-3.973-8.875-8.875s3.973-8.875 8.875-8.875c4.902 0 8.875 3.973 8.875 8.875s-3.973 8.875-8.875 8.875zM30 14h-4v-2h4v2z"
+                    ></path>
+                  </svg>
+                </figure>
+                <span class="upload-caption">{{
+                  hasImage ? "Replace" : "Click to upload"
+                }}</span>
+              </label>
+              <!--              <input-->
+              <!--                slot="upload-label"-->
+              <!--                ref="fileinput"-->
+              <!--                type="file"-->
+              <!--                multiple-->
+              <!--                accept="image/*"-->
+              <!--                @change="onFileChanged"-->
+              <!--              />-->
+            </ImageUploader>
           </v-flex>
         </v-layout>
       </v-card-text>
@@ -77,7 +108,9 @@ export default {
       fullPathImage: "",
       postImage: "",
       imageName: "",
-      imageUrl: ""
+      imageUrl: "",
+      hasImage: false,
+      imageTest: null
     };
   },
   computed: {
@@ -96,6 +129,13 @@ export default {
   },
 
   methods: {
+    setImage(output) {
+      this.hasImage = true;
+      this.imageTest = output;
+      console.log("Info", output.info);
+      console.log("Info", output);
+      console.log("Exif", output.exif);
+    },
     isCheckImage() {
       if (this.image.name) {
         this.fullPathImage = "/image/" + this.image.name;
@@ -124,7 +164,7 @@ export default {
           once: true
         }
       );
-      this.$refs.uploader.click();
+      this.$refs.fileinput.click();
     },
     uploadFile() {
       let imageFile = this.image;
@@ -183,6 +223,28 @@ export default {
 </script>
 
 <style scoped>
+#fileInput {
+  display: none;
+}
+h1,
+h2 {
+  font-weight: normal;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+li {
+  display: inline-block;
+  margin: 0 10px;
+}
+a {
+  color: #42b983;
+}
+.my-8 {
+  margin-top: 4rem;
+  margin-bottom: 4rem;
+}
 .article-post {
   margin-top: 15px;
 }

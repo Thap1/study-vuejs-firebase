@@ -5,6 +5,24 @@ export default {
   login(email, password) {
     return firebase.auth().signInWithEmailAndPassword(email, password);
   },
+  setUserInfo(path, data) {
+    return firebase
+      .database()
+      .ref(path)
+      .set({
+        email: data.email,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        gender: data.gender,
+        phoneNumber: data.phoneNumber
+      });
+  },
+  setUserAuth(data) {
+    return firebase
+      .auth()
+      .createUserWithEmailAndPassword(data.email, data.password);
+  },
+
   registerAcc(data) {
     firebase
       .auth()
@@ -73,7 +91,7 @@ export default {
     return firebase
       .database()
       .ref(pathPost)
-      .orderByChild(pathTime)
+      .orderByChild(pathTime);
   },
   setLikePost(path, dataLike) {
     return firebase
